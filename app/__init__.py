@@ -6,30 +6,27 @@ import os
 import sys
 from datetime import timedelta
 
-def check_env():
-    app_secret_key = os.getenv("APP_SECRET_KEY")
-    database_uri = os.getenv("DATABASE_URI")
-    jwt_secret_key = os.getenv("JWT_SECRET_KEY")
+load_dotenv()
 
-    if not app_secret_key or not database_uri or not jwt_secret_key:
-        return sys.exit("CONFIGURACOES INCOMPLETAS,,,,")
+
+def require_env(name: str) -> str:
+    val = os.getenv(name)
+    if not val:
+        sys.exit(f"FATAL: Variável obrigatória {name} não definida ou vazia")
+    return val
 
 
 def create_app():
 
     app = Flask(__name__)
-
-    load_dotenv()
-
-    check_env()
     
-    app.secret_key = os.getenv("APP_SECRET_KEY")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
+    app.secret_key = require_env("APP_SECRET_KEY")
+    app.config["SQLALCHEMY_DATABASE_URI"] = require_env("DATABASE_URI")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+    app.config["JWT_SECRET_KEY"] = require_env("JWT_SECRET_KEY")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes= 15)
-    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(minutes= 15)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days= 30)
 
 
     db.init_app(app)
