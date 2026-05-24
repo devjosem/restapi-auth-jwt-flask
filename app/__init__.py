@@ -1,6 +1,7 @@
 from flask import Flask
 
-from extensions import db, jwt
+from .extensions.db import db
+from .extensions.jwt import jwt
 from dotenv import load_dotenv
 import os
 import sys
@@ -27,6 +28,8 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = require_env("JWT_SECRET_KEY")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes= 15)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days= 30)
+
+    from .models.user import User
 
 
     db.init_app(app)
