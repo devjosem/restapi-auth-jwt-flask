@@ -2,6 +2,8 @@ from flask import Flask
 
 from .extensions.db import db
 from .extensions.jwt import jwt
+from app.routes.auth.auth import auth_bp
+
 from dotenv import load_dotenv
 import os
 import sys
@@ -30,9 +32,15 @@ def create_app():
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days= 30)
 
     from .models.user import User
+    
+    app.register_blueprint(auth_bp , url_prefix = "/auth")
+
 
 
     db.init_app(app)
     jwt.init_app(app)
+
+    with app.app_context():
+        db.create_all()
 
     return app
