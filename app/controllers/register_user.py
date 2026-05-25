@@ -1,15 +1,21 @@
 from flask import jsonify , request
 from app.schemas.register_shemas import CreateUser
+from app.schemas.register_shemas import User_register_Schemas
 from pydantic import ValidationError
 
 
-def register():
-    json_data = request.get_json()
 
+def before_request():
+    if request.method == 'POST' or request.method == 'PUT':
+        if not request.is_json:
+            return jsonify({"msg":"Formato de dados nao suportado!"}) ,400
+
+def register():
+    json_data = request.get_json(silent= True)
+
+    if not json_data:
+        return jsonify({"msg":"O json nao pode ser vazio!"})
     try:
-        data = CreateUser(**json_data)
+        dados = User_register_Schemas(json_data)
     except ValidationError as erro:
         return jsonify({"msg":erro.errors}) , 400
-    
-    return jsonify({"msg":"Usuario criado com sucesso!"}) , 201
-
