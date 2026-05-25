@@ -1,5 +1,4 @@
 from flask import jsonify , request
-from app.schemas.register_shemas import CreateUser
 from app.schemas.register_shemas import User_register_Schemas
 from pydantic import ValidationError
 
@@ -14,8 +13,5 @@ def register():
     json_data = request.get_json(silent= True)
 
     if not json_data:
-        return jsonify({"msg":"O json nao pode ser vazio!"})
-    try:
-        dados = User_register_Schemas(json_data)
-    except ValidationError as erro:
-        return jsonify({"msg":erro.errors}) , 400
+        return jsonify({"msg":"O corpo da requisicao nao pode ser vazio!"}) , 400
+    return jsonify({"dados":json_data}) , 200
