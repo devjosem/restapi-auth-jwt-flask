@@ -6,6 +6,10 @@ __pycache__/
 teste.py
 gerar_token.py
 
+.db
+*.sqlite
+*.sqlite3
+
 # C extensions
 *.so
 
